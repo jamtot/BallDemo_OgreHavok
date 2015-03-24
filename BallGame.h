@@ -30,9 +30,29 @@ public:
     virtual ~BallGame(void);
 
 protected:
+	//trying out some cam stuff
+	enum CAM_TYPE {FREE_VIEW, TPS, TOP_DOWN};
+	CAM_TYPE camType;
+	Vector3 TDCamPos;
+	Vector3 TPSCamPos;
+	Vector3 TPSCamDir;
+	SceneNode * mMainTPSNode;
+	SceneNode * mTPSSightNode;
+	SceneNode * mTPSCameraNode;
+
     virtual void createScene(void);
+	virtual void createCamera(void);
 	virtual void destroyScene(void);
 	virtual bool frameRenderingQueued(const Ogre::FrameEvent&);
+
+	// OIS::KeyListener
+    virtual bool keyPressed( const OIS::KeyEvent &arg );
+    virtual bool keyReleased( const OIS::KeyEvent &arg );
+    // OIS::MouseListener
+    virtual bool mouseMoved( const OIS::MouseEvent &arg );
+    virtual bool mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id );
+    virtual bool mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id );
+
 
 	Physics physics;
 	SceneNode* cubeNode;

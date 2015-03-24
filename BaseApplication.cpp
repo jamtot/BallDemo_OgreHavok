@@ -79,19 +79,19 @@ void BaseApplication::chooseSceneManager(void)
     mSceneMgr->addRenderQueueListener(mOverlaySystem);
 }
 //-------------------------------------------------------------------------------------
-void BaseApplication::createCamera(void)
-{
-    // Create the camera
-    mCamera = mSceneMgr->createCamera("PlayerCam");
-
-    // Position it at 500 in Z direction
-    mCamera->setPosition(Ogre::Vector3(0,10,50));
-    // Look back along -Z
-    mCamera->lookAt(Ogre::Vector3(0,0,0));
-    mCamera->setNearClipDistance(5);
-
-    mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
-}
+//void BaseApplication::createCamera(void)
+//{
+//    // Create the camera
+//    mCamera = mSceneMgr->createCamera("PlayerCam");
+//
+//    // Position it at 500 in Z direction
+//    mCamera->setPosition(Ogre::Vector3(0,10,50));
+//    // Look back along -Z
+//    mCamera->lookAt(Ogre::Vector3(0,0,0));
+//    mCamera->setNearClipDistance(5);
+//
+//    mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
+//}
 //-------------------------------------------------------------------------------------
 void BaseApplication::createFrameListener(void)
 {
