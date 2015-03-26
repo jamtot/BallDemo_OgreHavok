@@ -1,6 +1,6 @@
 /*
 -----------------------------------------------------------------------------
-Filename:    BallGame.h
+Filename:    BallDemo.h
 -----------------------------------------------------------------------------
 
 This source file is part of the
@@ -14,20 +14,21 @@ This source file is part of the
       http://www.ogre3d.org/tikiwiki/
 -----------------------------------------------------------------------------
 */
-#ifndef __BallGame_h_
-#define __BallGame_h_
+#ifndef __BallDemo_h_
+#define __BallDemo_h_
 
 #include "BaseApplication.h"
 #include "Actor.h"
 #include "Physics.h"
+#include "Player.h"
 
 //using namespace Ogre;
 
-class BallGame : public BaseApplication
+class BallDemo : public BaseApplication
 {
 public:
-    BallGame(void);
-    virtual ~BallGame(void);
+    BallDemo(void);
+    virtual ~BallDemo(void);
 
 protected:
 	//trying out some cam stuff
@@ -60,7 +61,9 @@ protected:
 	Actor * sphereActor;
 	Actor * cubeActor;
 	Actor * platActor;
+
+	Player * mPlayer;
 };
 
 
-#endif // #ifndef __BallGame_h_
+#endif // #ifndef __BallDemo_h_

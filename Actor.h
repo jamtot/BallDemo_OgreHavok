@@ -10,7 +10,7 @@ public:
 	Actor(SceneManager * sceneMgr, hkpWorld* pWorld);
 	~Actor(void);
 
-	void update(void);
+	virtual void update(void);
 
 	//maybe pass hkVector4 by reference?
 	void createSphere(float posX, float posY, float posZ, float size, bool isStatic = false, float mass = 1.0f);
@@ -23,8 +23,9 @@ public:
 			Vector3 pos = Vector3(p(0),p(1),p(2));
 			return pos;
 	}
-private:
-	
+protected:
+	SceneManager * mSceneMgr;
+	hkpWorld * mPWorld;
 	bool isSet; //will track whether the actor has been initialised or not
 };
 

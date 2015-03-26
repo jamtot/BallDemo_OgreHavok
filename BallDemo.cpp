@@ -1,6 +1,6 @@
 /*
 -----------------------------------------------------------------------------
-Filename:    BallGame.cpp
+Filename:    BallDemo.cpp
 -----------------------------------------------------------------------------
 
 This source file is part of the
@@ -14,20 +14,20 @@ Tutorial Framework
 http://www.ogre3d.org/tikiwiki/
 -----------------------------------------------------------------------------
 */
-#include "BallGame.h"
+#include "BallDemo.h"
 
 //-------------------------------------------------------------------------------------
-BallGame::BallGame(void)
+BallDemo::BallDemo(void)
 {
 }
 //-------------------------------------------------------------------------------------
-BallGame::~BallGame(void)
+BallDemo::~BallDemo(void)
 {
 	
 }
 
 //-------------------------------------------------------------------------------------
-void BallGame::createScene(void)
+void BallDemo::createScene(void)
 {
 	physics.SetUp();
 
@@ -41,7 +41,8 @@ void BallGame::createScene(void)
 	platActor = new Actor(mSceneMgr, physics.GetPhysicsWorld() );
 	platActor->createCuboid(0.f, 0.f, 0.f, 100.f,1.f,100.f, true);
 
-
+	mPlayer = new Player(mSceneMgr, physics.GetPhysicsWorld() );
+	mPlayer->createSphere(0.f,15.f,0.f,1.f);
 	// Create a Light and set its position
 
 	Ogre::Light* light = mSceneMgr->createLight("MainLight");
@@ -51,7 +52,7 @@ void BallGame::createScene(void)
 
 }
 
-void BallGame::createCamera(void){
+void BallDemo::createCamera(void){
 	// Create the camera
   
   //  mCamera = mSceneMgr->createCamera("PlayerCam");
@@ -98,28 +99,29 @@ void BallGame::createCamera(void){
 
 }
 
-void BallGame::destroyScene(void){
+void BallDemo::destroyScene(void){
 	physics.TidyUp();
 	BaseApplication::destroyScene();
 }
 
-bool BallGame::frameRenderingQueued(const Ogre::FrameEvent& evt){
+bool BallDemo::frameRenderingQueued(const Ogre::FrameEvent& evt){
 
 	physics.Simulate(evt.timeSinceLastFrame);
 	sphereActor->update();
 	cubeActor->update();
 	platActor->update();
+	mPlayer->update();
 
 	switch (camType)
 	{
 	case FREE_VIEW:
 		break;
 	case TPS:
-		mMainTPSNode->setPosition(sphereActor->getOgreBodyPosition());
+		mMainTPSNode->setPosition(mPlayer->getOgreBodyPosition());
 		//mCamera->setPosition(mTPSCameraNode->getPosition());
 		break;
 	case TOP_DOWN:
-		mCamera->setPosition(Ogre::Vector3(sphereActor->getOgreBodyPosition().x,mCamera->getPosition().y, sphereActor->getOgreBodyPosition().z));
+		mCamera->setPosition(Ogre::Vector3(mPlayer->getOgreBodyPosition().x,mCamera->getPosition().y, mPlayer->getOgreBodyPosition().z));
 		break;
 	}
 
@@ -127,7 +129,7 @@ bool BallGame::frameRenderingQueued(const Ogre::FrameEvent& evt){
 	return BaseApplication::frameRenderingQueued(evt);
 }
 
-bool BallGame::keyPressed( const OIS::KeyEvent &arg )
+bool BallDemo::keyPressed( const OIS::KeyEvent &arg )
 {
 
 	if (arg.key == OIS::KC_Z) 
@@ -137,7 +139,7 @@ bool BallGame::keyPressed( const OIS::KeyEvent &arg )
 		{
 		case FREE_VIEW:
 			camType = TPS;
-			mMainTPSNode->setPosition(sphereActor->getOgreBodyPosition());
+			mMainTPSNode->setPosition(mPlayer->getOgreBodyPosition());
 			mCamera->setPosition(mTPSCameraNode->getPosition());
 			mCamera->setPosition(0.0,0.0,0.0);
 			mCamera->setOrientation(q);
@@ -148,7 +150,7 @@ bool BallGame::keyPressed( const OIS::KeyEvent &arg )
 			mCamera->setOrientation(q);
 			mCamera->pitch(Ogre::Degree(-90));
 			camType = TOP_DOWN;
-			TDCamPos = Vector3(sphereActor->getOgreBodyPosition().x, sphereActor->getOgreBodyPosition().y + 10, sphereActor->getOgreBodyPosition().z);
+			TDCamPos = Vector3(mPlayer->getOgreBodyPosition().x, mPlayer->getOgreBodyPosition().y + 15, mPlayer->getOgreBodyPosition().z);
 			mCamera->setPosition(TDCamPos);
 			break;
 		case TOP_DOWN:
@@ -175,17 +177,52 @@ bool BallGame::keyPressed( const OIS::KeyEvent &arg )
 	return BaseApplication::keyPressed(arg);
 }
 
-bool BallGame::keyReleased( const OIS::KeyEvent &arg ){
+bool BallDemo::keyReleased( const OIS::KeyEvent &arg ){
+	
+	switch (camType)
+	{
+	case FREE_VIEW:
+		mCameraMan->injectKeyUp(arg);
+		break;
+	case TPS:
+	case TOP_DOWN:
+		/*if (arg.key == OIS::KC_W){mPlayer->setForward(false);}
+		if (arg.key == OIS::KC_S){mPlayer->setBackward(false);}
+		if (arg.key == OIS::KC_A){mPlayer->setLeft(false);}
+		if (arg.key == OIS::KC_D){mPlayer->setRight(false);}*/
+		break;
+	}
+
 	return BaseApplication::keyReleased(arg);
 }
-    // OIS::MouseListener
-bool BallGame::mouseMoved( const OIS::MouseEvent &arg ){
-	return BaseApplication::mouseMoved(arg);
+
+bool BallDemo::mouseMoved( const OIS::MouseEvent &arg )
+{
+
+	switch (camType)
+	{
+	case FREE_VIEW:
+		if (mTrayMgr->injectMouseMove(arg)) return true;
+		mCameraMan->injectMouseMove(arg);
+		break;
+	case TPS:
+		mMainTPSNode->yaw(Ogre::Degree(-arg.state.X.rel * 0.25f));
+		//mMainTPSNode->pitch(Ogre::Degree(-arg.state.Y.rel * 0.25f));
+		break;
+	case TOP_DOWN:
+		TDCamPos.y = TDCamPos.y + arg.state.Y.rel * 0.025f;
+		if (TDCamPos.y < 8) TDCamPos.y = 8;
+		mCamera->setPosition(TDCamPos);
+		break;
+	}
+
+    return BaseApplication::mouseMoved(arg);
 }
-bool BallGame::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id ){
+
+bool BallDemo::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id ){
 	return BaseApplication::mousePressed(arg, id);
 }
-bool BallGame::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id ){
+bool BallDemo::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id ){
 	return BaseApplication::mouseReleased(arg, id);
 }
 
@@ -205,7 +242,7 @@ extern "C" {
 #endif
 	{
 		// Create application object
-		BallGame app;
+		BallDemo app;
 
 		try {
 			app.go();

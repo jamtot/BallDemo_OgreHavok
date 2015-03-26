@@ -2,7 +2,7 @@
 
 
 Actor::Actor(SceneManager * sceneMgr, hkpWorld* pWorld) 
-	: OgreActor(sceneMgr), PhysicsActor(pWorld), isSet(false)
+	: OgreActor(sceneMgr), PhysicsActor(pWorld), mSceneMgr(sceneMgr), mPWorld(pWorld), isSet(false)
 {
 }
 
