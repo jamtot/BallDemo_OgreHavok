@@ -33,10 +33,10 @@ void BallDemo::createScene(void)
 
 
 	sphereActor = new Actor(mSceneMgr, physics.GetPhysicsWorld() );
-	sphereActor->createSphere(0.f,10.f,0.f,5.f);
+	sphereActor->createSphere(2.f,10.f,0.f,.9f);
 
 	cubeActor = new Actor(mSceneMgr, physics.GetPhysicsWorld() );
-	cubeActor->createCuboid(0.5f,15.f,0.5f,5.f,4.f,3.f);
+	cubeActor->createCuboid(-3.5f,15.f,-5.5f,.6f,2.f,.9f);
 
 	platActor = new Actor(mSceneMgr, physics.GetPhysicsWorld() );
 	platActor->createCuboid(0.f, 0.f, 0.f, 100.f,1.f,100.f, true);
@@ -54,18 +54,6 @@ void BallDemo::createScene(void)
 
 void BallDemo::createCamera(void){
 	// Create the camera
-  
-  //  mCamera = mSceneMgr->createCamera("PlayerCam");
-
-  //  // Position it at 500 in Z direction
-  //  mCamera->setPosition(Ogre::Vector3(0,10,50));
-  //  // Look back along -Z
-  //  mCamera->lookAt(Ogre::Vector3(0,0,0));
-  //  mCamera->setNearClipDistance(5);
-
-  //  mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
-
-
 	mCamera = mSceneMgr->createCamera("PlayerCam");
 	camType = FREE_VIEW;
 
@@ -110,7 +98,7 @@ bool BallDemo::frameRenderingQueued(const Ogre::FrameEvent& evt){
 	sphereActor->update();
 	cubeActor->update();
 	platActor->update();
-	mPlayer->update();
+	mPlayer->update(mMainTPSNode->getOrientation());
 
 	switch (camType)
 	{
@@ -157,7 +145,7 @@ bool BallDemo::keyPressed( const OIS::KeyEvent &arg )
 			camType = FREE_VIEW;
 			break;
 		}
-		//mPlayer->setCamMode((int)camType);
+		mPlayer->setCamMode(camType);
 	}
 
 	switch (camType)
@@ -167,10 +155,10 @@ bool BallDemo::keyPressed( const OIS::KeyEvent &arg )
 			break;
 	case TPS:
 	case TOP_DOWN:
-	/*	if (arg.key == OIS::KC_W){mPlayer->setForward(true);}
-		if (arg.key == OIS::KC_S){mPlayer->setBackward(true);}
-		if (arg.key == OIS::KC_A){mPlayer->setLeft(true);}
-		if (arg.key == OIS::KC_D){mPlayer->setRight(true);}*/
+		if (arg.key == OIS::KC_W){mPlayer->setMoveForward(true);}
+		if (arg.key == OIS::KC_S){mPlayer->setMoveBackward(true);}
+		if (arg.key == OIS::KC_A){mPlayer->setMoveLeft(true);}
+		if (arg.key == OIS::KC_D){mPlayer->setMoveRight(true);}
 		break;
 	}
 
@@ -186,10 +174,10 @@ bool BallDemo::keyReleased( const OIS::KeyEvent &arg ){
 		break;
 	case TPS:
 	case TOP_DOWN:
-		/*if (arg.key == OIS::KC_W){mPlayer->setForward(false);}
-		if (arg.key == OIS::KC_S){mPlayer->setBackward(false);}
-		if (arg.key == OIS::KC_A){mPlayer->setLeft(false);}
-		if (arg.key == OIS::KC_D){mPlayer->setRight(false);}*/
+		if (arg.key == OIS::KC_W){mPlayer->setMoveForward(false);}
+		if (arg.key == OIS::KC_S){mPlayer->setMoveBackward(false);}
+		if (arg.key == OIS::KC_A){mPlayer->setMoveLeft(false);}
+		if (arg.key == OIS::KC_D){mPlayer->setMoveRight(false);}
 		break;
 	}
 

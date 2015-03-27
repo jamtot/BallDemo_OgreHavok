@@ -21,8 +21,10 @@ This source file is part of the
 #include "Actor.h"
 #include "Physics.h"
 #include "Player.h"
+#include "enums.h"
 
 //using namespace Ogre;
+using namespace my_enums;
 
 class BallDemo : public BaseApplication
 {
@@ -32,8 +34,8 @@ public:
 
 protected:
 	//trying out some cam stuff
-	enum CAM_TYPE {FREE_VIEW, TPS, TOP_DOWN};
-	CAM_TYPE camType;
+
+	my_enums::cameraType camType;
 	Vector3 TDCamPos;
 	Vector3 TPSCamPos;
 	Vector3 TPSCamDir;
