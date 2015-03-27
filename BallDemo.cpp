@@ -30,7 +30,7 @@ BallDemo::~BallDemo(void)
 void BallDemo::createScene(void)
 {
 	physics.SetUp();
-
+	mIsPaused = false;
 
 	sphereActor = new Actor(mSceneMgr, physics.GetPhysicsWorld() );
 	sphereActor->createSphere(2.f,10.f,0.f,.9f);
@@ -94,11 +94,14 @@ void BallDemo::destroyScene(void){
 
 bool BallDemo::frameRenderingQueued(const Ogre::FrameEvent& evt){
 
-	physics.Simulate(evt.timeSinceLastFrame);
-	sphereActor->update();
-	cubeActor->update();
-	platActor->update();
-	mPlayer->update(mMainTPSNode->getOrientation());
+	if (!mIsPaused){
+		physics.Simulate(evt.timeSinceLastFrame);
+	
+		sphereActor->update();
+		cubeActor->update();
+		platActor->update();
+		mPlayer->update(mMainTPSNode->getOrientation());
+	}
 
 	switch (camType)
 	{
@@ -160,6 +163,10 @@ bool BallDemo::keyPressed( const OIS::KeyEvent &arg )
 		if (arg.key == OIS::KC_A){mPlayer->setMoveLeft(true);}
 		if (arg.key == OIS::KC_D){mPlayer->setMoveRight(true);}
 		break;
+	}
+
+	if (arg.key == OIS::KC_P){
+		mIsPaused==true ? mIsPaused = false : mIsPaused = true; 
 	}
 
 	return BaseApplication::keyPressed(arg);

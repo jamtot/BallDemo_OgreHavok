@@ -29,6 +29,7 @@ void Physics::SetUp(void)
 }
 
 void Physics::Simulate(float secTime){
+	//if(secTime>0.00001)// time of zero causes an exception 
 	if(secTime>0.00001)// time of zero causes an exception 
 		world->stepDeltaTime(secTime);
 }

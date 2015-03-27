@@ -65,6 +65,8 @@ protected:
 	Actor * platActor;
 
 	Player * mPlayer;
+
+	bool mIsPaused;
 };
 
 
